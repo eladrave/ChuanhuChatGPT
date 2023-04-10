@@ -279,12 +279,14 @@ def get_file_names(dir, plain=False, filetypes=[".json"]):
 
 
 def get_history_names(plain=False, user_name=""):
-    logging.info(f"从用户 {user_name} 中获取历史记录文件名列表")
+    #logging.info(f"从用户 {user_name} 中获取历史记录文件名列表")
+    logging.info(f"Retrieving history file name list from user {user_name}")
     return get_file_names(HISTORY_DIR / user_name, plain)
 
 
 def load_template(filename, mode=0):
-    logging.info(f"加载模板文件{filename}，模式为{mode}（0为返回字典和下拉菜单，1为返回下拉菜单，2为返回字典）")
+    #logging.info(f"加载模板文件{filename}，模式为{mode}（0为返回字典和下拉菜单，1为返回下拉菜单，2为返回字典）")
+    logging.info(f"Loading template file {filename}, mode is {mode} (0 for returning dictionary and dropdown menu, 1 for returning dropdown menu, 2 for returning dictionary)")
     lines = []
     logging.info("Loading template...")
     if filename.endswith(".json"):
@@ -381,24 +383,22 @@ def get_geoip():
     try:
         with retrieve_proxy():
             response = requests.get("https://ipapi.co/json/", timeout=5)
-        data = response.json()
+            data = response.json()
     except:
-        data = {"error": True, "reason": "连接ipapi失败"}
+        data = {"error": True, "reason": "Connection to ipapi failed"}
     if "error" in data.keys():
-        logging.warning(f"无法获取IP地址信息。\n{data}")
         if data["reason"] == "RateLimited":
             return (
-                f"获取IP地理位置失败，因为达到了检测IP的速率限制。聊天功能可能仍然可用。"
+                f"Failed to get IP geolocation due to rate limiting of IP checking. Chat functionality may still be available."
             )
         else:
-            return f"获取IP地理位置失败。原因：{data['reason']}。你仍然可以使用聊天功能。"
+            return f"Failed to get IP geolocation. Reason: {data['reason']}. You can still use the chat feature."
     else:
         country = data["country_name"]
         if country == "China":
-            text = "**您的IP区域：中国。请立即检查代理设置，在不受支持的地区使用API可能导致账号被封禁。**"
+            text = "Your IP region: China. Please check your proxy settings immediately, as using the API in unsupported regions may result in account bans."
         else:
-            text = f"您的IP区域：{country}。"
-        logging.info(text)
+            text = f"Your IP region: {country}."
         return text
 
 

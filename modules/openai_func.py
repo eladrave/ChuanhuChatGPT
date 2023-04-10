@@ -44,10 +44,10 @@ def get_usage(openai_api_key):
         try:
             usage_data = get_billing_data(openai_api_key, usage_url)
         except Exception as e:
-            logging.error(f"获取API使用情况失败:"+str(e))
-            return f"**获取API使用情况失败**"
-        rounded_usage = "{:.5f}".format(usage_data['total_usage']/100)
-        return f"**本月使用金额** \u3000 ${rounded_usage}"
+            logging.error(f"Failed to get API usage:" + str(e))
+            return f"Failed to get API usage"
+        rounded_usage = "{:.5f}".format(usage_data['total_usage'] / 100)
+        return f"This month's usage amount \u3000 ${rounded_usage}"
     except requests.exceptions.ConnectTimeout:
         status_text = standard_error_msg + connection_timeout_prompt + error_retrieve_prompt
         return status_text
@@ -55,7 +55,7 @@ def get_usage(openai_api_key):
         status_text = standard_error_msg + read_timeout_prompt + error_retrieve_prompt
         return status_text
     except Exception as e:
-        logging.error(f"获取API使用情况失败:"+str(e))
+        logging.error(f"Failed to get API usage:" + str(e))
         return standard_error_msg + error_retrieve_prompt
 
 def get_last_day_of_month(any_day):
